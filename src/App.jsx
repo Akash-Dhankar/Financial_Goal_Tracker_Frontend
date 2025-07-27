@@ -1,17 +1,17 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import LoginPage from './components/LoginPage';
-// import Dashboard from './components/Dashboard';
-import { useAuth } from './auth/useAuth';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Login from './components/Login';
+import Register from './components/Register';
+import Dashboard from './components/Dashboard';
+import Header from './components/Header';
 
 function App() {
-  const { token } = useAuth(); 
-
   return (
     <Router>
+      <Header /> 
       <Routes>
-        <Route path="/" element={!token ? <LoginPage /> : <Navigate to="/dashboard" />} />
-        <Route path="/dashboard" element={token ? <Dashboard /> : <Navigate to="/" />} />
+        <Route path="/" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/dashboard" element={<Dashboard />} />
       </Routes>
     </Router>
   );

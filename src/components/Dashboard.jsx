@@ -1,64 +1,94 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
+import Header from '../components/Header'
 
-function Dashboard({ token }) {
+function Dashboard() {
   const [username, setUsername] = useState('');
   const [goals, setGoals] = useState([]);
-  const [newGoal, setNewGoal] = useState({ title: '', targetAmount: '', savedAmount: '' });
-
-  const api = axios.create({
-    baseURL: '/api',
-    headers: { Authorization: `Bearer ${token}` }
-  });
+  const [form, setForm] = useState({ title: '', targetAmount: '', savedAmount: '' });
 
   useEffect(() => {
-    api.get('/goals')
-      .then(res => {
-        setGoals(res.data);
-        if (res.data.length > 0) {
-          setUsername(res.data[0].user?.username || 'User'); 
-        }
-      })
-      .catch(err => console.error(err));
+    const token = localStorage.getItem('token');
+    axios.get('http://localhost:8080/api/goals', {
+      headers: { Authorization: `Bearer ${token}` }
+    }).then(res => {
+      setGoals(res.data);
+    try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    setUsername(payload?.sub || 'User');
+    } catch (err) {
+    console.error('Invalid token format', err);
+    setUsername('User');
+}
+
+    });
   }, []);
 
-  const addGoal = () => {
-    api.post('/goals', newGoal)
-      .then(res => {
-        setGoals([...goals, res.data]);
-        setNewGoal({ title: '', targetAmount: '', savedAmount: '' });
-      })
-      .catch(err => console.error(err));
+  const handleChange = e => {
+    setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const updateGoal = (id, updated) => {
-    api.put(`/goals/${id}`, updated)
-      .then(res => {
-        setGoals(goals.map(g => (g.id === id ? res.data : g)));
-      });
+  const handleSubmit = async e => {
+    e.preventDefault();
+    const token = localStorage.getItem('token');
+    await axios.post('http://localhost:8080/api/goals', form, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    window.location.reload();
   };
+
+  const getMonth = dateStr => new Date(dateStr).toLocaleString('default', { month: 'long', year: 'numeric' });
 
   return (
-    <div>
-      <h2>Goal Tracker</h2>
-      <h4>Welcome, {username || 'User'}</h4>
+    <div className="container mt-4">
+      <h3>Welcome, {username} 👋</h3>
 
-      <h3>Add New Goal</h3>
-      <input placeholder="Title" value={newGoal.title} onChange={(e) => setNewGoal({ ...newGoal, title: e.target.value })} />
-      <input type="number" placeholder="Target Amount" value={newGoal.targetAmount} onChange={(e) => setNewGoal({ ...newGoal, targetAmount: e.target.value })} />
-      <input type="number" placeholder="Saved Amount" value={newGoal.savedAmount} onChange={(e) => setNewGoal({ ...newGoal, savedAmount: e.target.value })} />
-      <button onClick={addGoal}>Add Goal</button>
+      <div className="mt-4 mb-3 p-3 border rounded bg-light">
+        <h5>Add Financial Goal</h5>
+        <form onSubmit={handleSubmit}>
+          <div className="row">
+            <div className="col-md-4 mb-2">
+              <input type="text" className="form-control" name="title" placeholder="Title" onChange={handleChange} required />
+            </div>
+            <div className="col-md-3 mb-2">
+              <input type="number" className="form-control" name="targetAmount" placeholder="Target Amount" onChange={handleChange} required />
+            </div>
+            <div className="col-md-3 mb-2">
+              <input type="number" className="form-control" name="savedAmount" placeholder="Saved Amount" onChange={handleChange} required />
+            </div>
+            <div className="col-md-2 mb-2">
+              <button type="submit" className="btn btn-primary w-100">Add</button>
+            </div>
+          </div>
+        </form>
+      </div>
 
-      <h3>My Goals</h3>
-      {goals.map((goal) => (
-        <div key={goal.id} style={{ marginBottom: '10px' }}>
-          <strong>{goal.title}</strong> — ₹{goal.savedAmount} / ₹{goal.targetAmount}
-          <button onClick={() => {
-            const newSaved = prompt('Update saved amount:', goal.savedAmount);
-            if (newSaved) updateGoal(goal.id, { ...goal, savedAmount: parseFloat(newSaved) });
-          }}>Edit</button>
-        </div>
-      ))}
+      <div className="mt-4">
+        <h5>Month-wise Goals</h5>
+        {goals.length === 0 && <p>No goals added yet.</p>}
+
+        {Object.entries(
+          goals.reduce((acc, goal) => {
+            const month = getMonth(goal.createdAt || new Date());
+            if (!acc[month]) acc[month] = [];
+            acc[month].push(goal);
+            return acc;
+          }, {})
+          ).map(([month, monthlyGoals]) => (
+           <div key={month} className="mb-4">
+            <h6>{month}</h6>
+             < ul className="list-group">
+               {monthlyGoals.map(goal => (
+                 <li className="list-group-item d-flex justify-content-between align-items-center" key={goal.id}>
+                  <span>
+                    <strong>{goal.title}</strong> - ₹{goal.savedAmount} / ₹{goal.targetAmount}
+                  </span>
+                 </li>
+               ))}
+             </ul>
+            </div>
+       ))}
+      </div>
     </div>
   );
 }
