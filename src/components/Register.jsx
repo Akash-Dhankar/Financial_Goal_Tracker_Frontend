@@ -22,7 +22,6 @@ function Register() {
         username: form.username,
         password: form.password,
         email: form.email
-        // The role is handled backend-side as per your code (always assigning ROLE_USER).
       };
 
       await axios.post('http://localhost:8080/api/auth/register', payload);

@@ -1,7 +1,6 @@
 export const isLoggedIn = () => {
   const token = localStorage.getItem('token');
   if (!token) return false;
-
   try {
     const payload = JSON.parse(atob(token.split('.')[1]));
     const exp = payload.exp * 1000;
@@ -13,5 +12,20 @@ export const isLoggedIn = () => {
 
 export const logout = () => {
   localStorage.removeItem('token');
-  window.location.href = '/login'; 
+  window.location.href = '/login';
 };
+export const getUserRole = () => {
+  const token = localStorage.getItem('token');
+  if (!token) return null;
+
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    console.log("Decoded token payload:", payload); 
+    const roles = payload.roles || [];
+    return roles.length > 0 ? roles[0].replace('ROLE_', '') : null;
+  } catch (error) {
+    console.error("Failed to decode JWT token:", error);
+    return null;
+  }
+};
+

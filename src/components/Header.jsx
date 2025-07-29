@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { isLoggedIn, logout } from '../utils/auth'; 
+import { isLoggedIn, logout, getUserRole } from '../utils/auth';
 
 function Header() {
   const location = useLocation();
@@ -10,20 +10,25 @@ function Header() {
       <Link className="navbar-brand" to="/">Goal Tracker</Link>
 
       <div className="ms-auto">
-        {!loggedIn ? (
-          <>
-            {location.pathname !== '/login' && (
-              <Link className="btn btn-outline-light me-2" to="/login">Login</Link>
-            )}
-            {location.pathname !== '/register' && (
-              <Link className="btn btn-outline-light" to="/register">Signup</Link>
-            )}
-          </>
-        ) : (
-          <button className="btn btn-danger" onClick={logout}>Logout</button>
+        {loggedIn ? (
+      <>
+        {getUserRole() === 'ADMIN' && (
+          <Link className="btn btn-outline-warning me-2" to="/admin">Admin Dashboard</Link>
         )}
-      </div>
-    </nav>
+      <button className="btn btn-danger" onClick={logout}>Logout</button>
+      </>
+      ) : (
+      <>
+      {location.pathname !== '/login' && (
+        <Link className="btn btn-outline-light me-2" to="/login">Login</Link>
+      )}
+      {location.pathname !== '/register' && (
+        <Link className="btn btn-outline-light" to="/register">Signup</Link>
+      )}
+     </>
+    )}
+   </div>
+  </nav>
   );
 }
 
