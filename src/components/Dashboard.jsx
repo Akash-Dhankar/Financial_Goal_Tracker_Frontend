@@ -112,9 +112,9 @@ function Dashboard() {
                     <Card className="h-100 shadow border border-2 border-info rounded-4" style={{ background: '#fdfbff' }}>
           <Card.Body>
             <Card.Title className="text-center text-primary fw-bold mb-3">{goal.title}</Card.Title>
-            <p><strong>🎯 Target:</strong> ₹{goal.targetAmount}</p>
-            <p><strong>💰 Saved:</strong> ₹{goal.savedAmount}</p>
-            <p><strong>📅 Created:</strong> {goal.createdAt ? new Date(goal.createdAt).toLocaleDateString() : 'N/A'}</p>
+            <p><strong>Target:</strong> ₹{goal.targetAmount}</p>
+            <p><strong>Saved:</strong> ₹{goal.savedAmount}</p>
+            <p><strong>Created:</strong> {goal.createdAt ? new Date(goal.createdAt).toLocaleDateString() : 'N/A'}</p>
             
             <p className={`fw-semibold ${difference >= 0 ? 'text-success' : 'text-danger'}`}>
               <strong>🔍 Difference:</strong> ₹{difference}
@@ -122,10 +122,10 @@ function Dashboard() {
 
             <div className="d-flex justify-content-between mt-4">
               <Button variant="outline-primary" size="sm" onClick={() => { setSelectedGoal(goal); setShowEdit(true); }}>
-                ✏️ Edit
+                Edit
               </Button>
               <Button variant="outline-danger" size="sm" onClick={() => { setSelectedGoal(goal); setShowDelete(true); }}>
-                🗑️ Delete
+                Delete
               </Button>
             </div>
           </Card.Body>

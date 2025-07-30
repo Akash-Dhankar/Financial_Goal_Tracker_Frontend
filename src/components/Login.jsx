@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
-import Header from '../components/Header'
+import { getUserRole } from '../utils/auth';
 
 function Login() {
   const [form, setForm] = useState({ username: '', password: '' });
@@ -14,7 +14,11 @@ function Login() {
     try {
       const response = await axios.post('http://localhost:8080/api/auth/login', form);
       localStorage.setItem('token', response.data.token);
-      navigate('/dashboard');
+
+      window.dispatchEvent(new Event("authChange"));
+
+      const role = getUserRole();
+      navigate(role === 'ADMIN' ? '/admin' : '/dashboard');
     } catch (error) {
       alert('Invalid credentials');
     }

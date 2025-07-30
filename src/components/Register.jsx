@@ -21,7 +21,8 @@ function Register() {
       const payload = {
         username: form.username,
         password: form.password,
-        email: form.email
+        email: form.email,
+        role: form.role
       };
 
       await axios.post('http://localhost:8080/api/auth/register', payload);
@@ -52,7 +53,7 @@ function Register() {
           <label>Role</label>
           <select className="form-control" name="role" value={form.role} onChange={handleChange}>
             <option value="ROLE_USER">User</option>
-            <option value="ROLE_ADMIN" disabled>Admin (for now)</option>
+            <option value="ROLE_ADMIN">Admin</option>
           </select>
           <small className="text-muted">Role will be handled by backend. Only User allowed now.</small>
         </div>

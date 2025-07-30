@@ -12,9 +12,6 @@ function Header() {
       <div className="ms-auto">
         {loggedIn ? (
       <>
-        {getUserRole() === 'ADMIN' && (
-          <Link className="btn btn-outline-warning me-2" to="/admin">Admin Dashboard</Link>
-        )}
       <button className="btn btn-danger" onClick={logout}>Logout</button>
       </>
       ) : (
