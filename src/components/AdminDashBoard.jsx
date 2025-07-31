@@ -13,13 +13,13 @@ function AdminDashboard() {
     const decoded = JSON.parse(atob(token.split('.')[1]));
     setCurrentAdmin(decoded.sub);
 
-    axios.get('http://localhost:8080/api/admin/users', {
+    axios.get('https://goal-tracker-latest.onrender.com/api/admin/users', {
       headers: { Authorization: `Bearer ${token}` }
     }).then(res => {
       setUsers(res.data);
     });
 
-    axios.get('http://localhost:8080/api/admin/goals/count', {
+    axios.get('https://goal-tracker-latest.onrender.com/api/admin/goals/count', {
       headers: { Authorization: `Bearer ${token}` }
     }).then(res => {
       setGoalCount(res.data);
@@ -28,7 +28,7 @@ function AdminDashboard() {
 
   const deleteUser = id => {
     const token = localStorage.getItem('token');
-    axios.delete(`http://localhost:8080/api/admin/users/${id}`, {
+    axios.delete(`https://goal-tracker-latest.onrender.com/api/admin/users/${id}`, {
       headers: { Authorization: `Bearer ${token}` }
     }).then(() => {
       setUsers(users.filter(u => u.id !== id));

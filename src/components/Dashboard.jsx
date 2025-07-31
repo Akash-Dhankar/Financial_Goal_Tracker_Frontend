@@ -27,7 +27,7 @@ function Dashboard() {
   }, []);
 
   const fetchGoals = async () => {
-    const res = await axios.get('http://localhost:8080/api/goals', {
+    const res = await axios.get('https://goal-tracker-latest.onrender.com/api/goals', {
       headers: { Authorization: `Bearer ${token}` }
     });
     setGoals(res.data);
@@ -39,7 +39,7 @@ function Dashboard() {
 
   const handleSubmit = async e => {
     e.preventDefault();
-    await axios.post('http://localhost:8080/api/goals', form, {
+    await axios.post('https://goal-tracker-latest.onrender.com/api/goals', form, {
       headers: { Authorization: `Bearer ${token}` }
     });
     setForm({ title: '', targetAmount: '', savedAmount: '' });
@@ -47,14 +47,14 @@ function Dashboard() {
   };
 
   const handleEditSave = async updatedGoal => {
-    await axios.put(`http://localhost:8080/api/goals/${updatedGoal.id}`, updatedGoal, {
+    await axios.put(`https://goal-tracker-latest.onrender.com/api/goals/${updatedGoal.id}`, updatedGoal, {
       headers: { Authorization: `Bearer ${token}` }
     });
     fetchGoals();
   };
 
   const handleDeleteConfirm = async () => {
-    await axios.delete(`http://localhost:8080/api/goals/${selectedGoal.id}`, {
+    await axios.delete(`https://goal-tracker-latest.onrender.com/api/goals/${selectedGoal.id}`, {
       headers: { Authorization: `Bearer ${token}` }
     });
     setShowDelete(false);
@@ -110,28 +110,26 @@ function Dashboard() {
                 return (
                   <div className="col-md-6 col-lg-4 mb-4" key={goal.id}>
                     <Card className="h-100 shadow border border-2 border-info rounded-4" style={{ background: '#fdfbff' }}>
-          <Card.Body>
-            <Card.Title className="text-center text-primary fw-bold mb-3">{goal.title}</Card.Title>
-            <p><strong>Target:</strong> ₹{goal.targetAmount}</p>
-            <p><strong>Saved:</strong> ₹{goal.savedAmount}</p>
-            <p><strong>Created:</strong> {goal.createdAt ? new Date(goal.createdAt).toLocaleDateString() : 'N/A'}</p>
-            
-            <p className={`fw-semibold ${difference >= 0 ? 'text-success' : 'text-danger'}`}>
-              <strong>🔍 Difference:</strong> ₹{difference}
-            </p>
+                      <Card.Body>
+                        <Card.Title className="text-center text-primary fw-bold mb-3">{goal.title}</Card.Title>
+                        <p><strong>Target:</strong> ₹{goal.targetAmount}</p>
+                        <p><strong>Saved:</strong> ₹{goal.savedAmount}</p>
+                        <p><strong>Created:</strong> {goal.createdAt ? new Date(goal.createdAt).toLocaleDateString() : 'N/A'}</p>
+                        <p className={`fw-semibold ${diffColor}`}>
+                          <strong>🔍 Difference:</strong> ₹{difference}
+                        </p>
 
-            <div className="d-flex justify-content-between mt-4">
-              <Button variant="outline-primary" size="sm" onClick={() => { setSelectedGoal(goal); setShowEdit(true); }}>
-                Edit
-              </Button>
-              <Button variant="outline-danger" size="sm" onClick={() => { setSelectedGoal(goal); setShowDelete(true); }}>
-                Delete
-              </Button>
-            </div>
-          </Card.Body>
-        </Card>
-
-                </div>
+                        <div className="d-flex justify-content-between mt-4">
+                          <Button variant="outline-primary" size="sm" onClick={() => { setSelectedGoal(goal); setShowEdit(true); }}>
+                            Edit
+                          </Button>
+                          <Button variant="outline-danger" size="sm" onClick={() => { setSelectedGoal(goal); setShowDelete(true); }}>
+                            Delete
+                          </Button>
+                        </div>
+                      </Card.Body>
+                    </Card>
+                  </div>
                 );
               })}
             </div>

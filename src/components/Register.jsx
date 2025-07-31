@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
-import Header from '../components/Header'
+import Header from '../components/Header';
 
 function Register() {
   const [form, setForm] = useState({
@@ -25,7 +25,7 @@ function Register() {
         role: form.role
       };
 
-      await axios.post('http://localhost:8080/api/auth/register', payload);
+      await axios.post('https://goal-tracker-latest.onrender.com/api/auth/register', payload);
       alert('Registration successful! You can now login.');
       navigate('/');
     } catch (error) {

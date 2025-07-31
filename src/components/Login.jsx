@@ -12,7 +12,7 @@ function Login() {
   const handleSubmit = async e => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:8080/api/auth/login', form);
+      const response = await axios.post('https://goal-tracker-latest.onrender.com/api/auth/login', form);
       localStorage.setItem('token', response.data.token);
 
       window.dispatchEvent(new Event("authChange"));
